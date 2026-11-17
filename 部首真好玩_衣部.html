@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>部首真有趣－衣部大冒險（標楷體注音版）</title>
+    <!-- 引入 Noto Serif TC 作為跨平台無標楷體時的備援字型 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* 全域變數設定：童趣草地與木頭色系 + 標楷體字型設定 */
+        :root {
+            --sky-top: #7dd3fc;
+            --sky-bottom: #e0f2fe;
+            --grass-light: #86efac;
+            --grass-main: #4ade80;
+            --grass-dark: #22c55e;
+            --wood-light: #fde68a;
+            --wood-main: #d97706;
+            --wood-dark: #78350f;
+            --wood-border: #451a03;
+            --hole-dark: #3f2305;
+            --hole-rim: #92400e;
+            --accent-pink: #fb7185;
+            --accent-blue: #38bdf8;
+            /* 優先使用系統內建標楷體（Windows DFKai-SB / macOS BiauKai） */
+            --font-kai: 'BiauKai', 'DFKai-SB', '標楷體', 'TW-Kai', 'KaiTi', 'Noto Serif TC', serif;
+            --font-bopo: 'BiauKai', 'DFKai-SB', '標楷體', 'Noto Sans TC', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100vw;
+            height: 100dvh;
+            max-width: 100%;
+            max-height: 100dvh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-kai);
+            background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 35%, var(--grass-light) 35%, var(--grass-main) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #1e293b;
+        }
+
+        /* =========================================================
+           台灣國小課本標準「標楷體＋右側直式注音」排版元件樣式
+           ========================================================= */
+        .zhuyin-phrase {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.08em;
+            line-height: 1.15;
+            vertical-align: middle;
+        }
+
+        .zhuyin-phrase.left-align {
+            justify-content: flex-start;
+        }
+
+        .zy-char-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1px 1px;
+        }
+
+        .zy-char {
+            font-family: var(--font-kai);
+            font-weight: 700;
+            line-height: 1.05;
+        }
+
+        /* 注音符號直排容器（位於國字右側） */
+        .zy-bopo-col {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-bopo);
+            font-size: 0.36em;
+            font-weight: 700;
+            line-height: 1.02;
+            margin-left: 1px;
+            min-width: 1.25em;
+            position: relative;
+        }
+
+        /* 老師切換「關閉注音」時隱藏注音欄 */
+        body.hide-zhuyin .zy-bopo-col {
+            display: none;
+        }
+
+        /* 輕聲「˙」位於第一個注音符號正上方 */
+        .zy-neutral {
+            display: block;
+            height: 0.75em;
+            line-height: 0.75em;
+            text-align: center;
+            transform: translateY(1px);
+        }
+
+        /* 注音主體與右側聲調（ˊ ˇ ˋ） */
+        .zy-syllable-row {
+            display: inline-flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .zy-symbols {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.02;
+        }
+
+        .zy-tone {
+            position: absolute;
+            right: -0.68em;
+            bottom: -0.08em;
+            font-size: 1.05em;
+            line-height: 1;
+        }
+
+        /* 地鼠大木牌專用注音微調：依視窗高度自適應縮放，防止撐高格子 */
+        .word-sign .zy-char {
+            font-size: clamp(18px, 3.2vh, 34px);
+            font-weight: 900;
+        }
+        .word-sign .zy-bopo-col {
+            font-size: clamp(9px, 1.35vh, 14px);
+            color: #334155;
+            margin-left: 2px;
+        }
+        .word-sign .zhuyin-phrase {
+            gap: clamp(3px, 0.8vw, 8px);
+        }
+
+        /* 裝飾雲朵背景 */
+        .cloud {
+            position: fixed;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 50px;
+            z-index: 0;
+            pointer-events: none;
+            animation: floatCloud linear infinite;
+        }
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: inherit;
+            border-radius: 50%;
+        }
+        .cloud-1 { width: 120px; height: 40px; top: 5%; left: -150px; animation-duration: 35s; }
+        .cloud-1::before { width: 50px; height: 50px; top: -25px; left: 15px; }
+        .cloud-1::after { width: 65px; height: 65px; top: -32px; right: 15px; }
+
+        .cloud-2 { width: 90px; height: 32px; top: 14%; left: -120px; animation-duration: 45s; animation-delay: 12s; }
+        .cloud-2::before { width: 40px; height: 40px; top: -18px; left: 12px; }
+        .cloud-2::after { width: 48px; height: 48px; top: -24px; right: 12px; }
+
+        @keyframes floatCloud {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(100vw + 300px)); }
+        }
+
+        /* 遊戲主容器：嚴格鎖定 100dvh 零捲動、零溢出 */
+        .game-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 960px;
+            height: 100dvh;
+            max-height: 100dvh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: clamp(4px, 1vh, 10px) clamp(8px, 1.5vw, 18px);
+            gap: clamp(4px, 0.8vh, 8px);
+        }
+
+        /* 頂部木頭標題與控制列 */
+        .header-board {
+            flex-shrink: 0;
+            width: 100%;
+            background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+            border: 3px solid var(--wood-border);
+            border-radius: 18px;
+            padding: clamp(4px, 0.7vh, 8px) clamp(10px, 1.4vw, 16px);
+            box-shadow: 0 4px 0 var(--wood-border), 0 6px 14px rgba(0,0,0,0.18);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+
+        .title-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .game-title {
+            font-size: clamp(1rem, 2.3vh, 1.55rem);
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 2px 2px 0 var(--wood-border), -1px -1px 0 var(--wood-border), 1px -1px 0 var(--wood-border), -1px 1px 0 var(--wood-border);
+        }
+
+        .game-title .zy-bopo-col {
+            color: #fef08a;
+            text-shadow: 1px 1px 0 var(--wood-border);
+        }
+
+        /* 頂部功能按鈕群 */
+        .controls-group {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .btn-pill {
+            background: #fef3c7;
+            border: 2.5px solid var(--wood-border);
+            border-radius: 999px;
+            padding: clamp(2px, 0.45vh, 5px) clamp(8px, 1vw, 12px);
+            font-family: var(--font-kai);
+            font-size: clamp(0.82rem, 1.7vh, 0.96rem);
+            font-weight: 700;
+            color: var(--wood-border);
+            cursor: pointer;
+            box-shadow: 0 2px 0 var(--wood-border);
+            transition: transform 0.1s, background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .btn-pill:active {
+            transform: translateY(2px);
+            box-shadow: 0 0 0 var(--wood-border);
+        }
+
+        .btn-pill.active-mode {
+            background: #bbf7d0;
+            color: #14532d;
+        }
+
+        /* 狀態與衣服小精靈提示區 */
+        .status-panel {
+            flex-shrink: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.94);
+            border: 3px solid var(--wood-dark);
+            border-radius: 18px;
+            padding: clamp(4px, 0.7vh, 8px) clamp(10px, 1.4vw, 14px);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+
+        /* 衣服小精靈提示卡 */
+        .mascot-hint {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #eff6ff;
+            border: 2.5px solid #60a5fa;
+            border-radius: 14px;
+            padding: clamp(3px, 0.5vh, 6px) clamp(8px, 1.2vw, 12px);
+            flex: 1 1 280px;
+        }
+
+        .clothes-fairy {
+            width: clamp(34px, 4.8vh, 46px);
+            height: clamp(34px, 4.8vh, 46px);
+            flex-shrink: 0;
+            animation: bounceFairy 2s ease-in-out infinite;
+        }
+
+        @keyframes bounceFairy {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50% { transform: translateY(-3px) rotate(3deg); }
+        }
+
+        .hint-text-box {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .hint-main {
+            font-size: clamp(0.88rem, 1.9vh, 1.12rem);
+            font-weight: 900;
+            color: #1d4ed8;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2px;
+        }
+
+        .hint-sub {
+            font-size: clamp(0.76rem, 1.55vh, 0.94rem);
+            font-weight: 700;
+            color: #475569;
+        }
+
+        .radical-badge {
+            display: inline-flex;
+            align-items: center;
+            background: #fef08a;
+            border: 2px solid #eab308;
+            color: #854d0e;
+            border-radius: 7px;
+            padding: 0 5px;
+            margin: 0 2px;
+            font-weight: 900;
+        }
+
+        /* 分數進度與愛心 */
+        .stats-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .progress-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 145px;
+        }
+
+        .progress-label {
+            font-size: clamp(0.84rem, 1.75vh, 0.98rem);
+            font-weight: 900;
+            color: #15803d;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: clamp(11px, 1.7vh, 15px);
+            background: #e2e8f0;
+            border: 2px solid #166534;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #4ade80, #16a34a);
+            transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .hearts-container {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            background: #fff1f2;
+            border: 2px solid #fda4af;
+            padding: clamp(3px, 0.5vh, 6px) 10px;
+            border-radius: 12px;
+        }
+
+        .heart {
+            font-size: clamp(1.1rem, 2.2vh, 1.4rem);
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .heart.lost {
+            opacity: 0.25;
+            transform: scale(0.8);
+            filter: grayscale(100%);
+        }
+
+        /* 3x3 草地打地鼠遊戲區：均勻分配剩餘視窗高度，絕不溢出 */
+        .board-area {
+            flex: 1 1 0;
+            min-height: 0;
+            min-width: 0;
+            width: 100%;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #4ade80 0%, #22c55e 100%);
+            border: 4px solid #15803d;
+            border-radius: 24px;
+            padding: clamp(10px, 1.6vh, 18px) clamp(8px, 1.5vw, 18px) clamp(6px, 1vh, 12px);
+            box-shadow: inset 0 4px 10px rgba(255,255,255,0.4), 0 5px 0 #14532d;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, minmax(0, 1fr));
+            gap: clamp(6px, 1.1vh, 14px) clamp(8px, 1.4vw, 16px);
+            position: relative;
+        }
+
+        /* 畫面震動特效（答錯時觸發） */
+        .shake-screen {
+            animation: screenShake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes screenShake {
+            10%, 90% { transform: translate3d(-4px, 0, 0); }
+            20%, 80% { transform: translate3d(6px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+            40%, 60% { transform: translate3d(8px, 0, 0); }
+        }
+
+        /* 單一地鼠洞單元：嚴格限制於格子高度內，頂部留白確保字卡升起不裁切 */
+        .hole-cell {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+            min-width: 0;
+            padding-top: clamp(6px, 1vh, 12px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            overflow: hidden;
+            border-radius: 16px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* 洞口後方深色陰影 */
+        .hole-back {
+            position: absolute;
+            bottom: 3%;
+            width: 84%;
+            max-width: 220px;
+            height: 24%;
+            background: var(--hole-dark);
+            border-radius: 50%;
+            border: 3px solid var(--hole-rim);
+            z-index: 1;
+            box-shadow: inset 0 6px 8px rgba(0,0,0,0.7);
+        }
+
+        /* 洞口前方土堆遮罩（壓低高度並置於木牌後方，避免擋住字卡） */
+        .hole-front {
+            position: absolute;
+            bottom: 0;
+            width: 90%;
+            max-width: 235px;
+            height: 12%;
+            background: linear-gradient(180deg, #b45309 0%, #78350f 100%);
+            border-top: 3px solid #fbbf24;
+            border-radius: 50% 50% 20px 20px / 60% 60% 18px 18px;
+            z-index: 3;
+            pointer-events: none;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+        }
+
+        /* 地鼠與舉牌容器：升起時高高浮現在土堆前景之上（z-index: 6），且不超出格子頂部 */
+        .mole-wrapper {
+            position: absolute;
+            bottom: 11%;
+            width: 94%;
+            max-width: 245px;
+            height: 85%;
+            z-index: 6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            transform: translateY(125%);
+            transition: transform 0.26s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+        }
+
+        .hole-cell.up .mole-wrapper {
+            transform: translateY(0%);
+            pointer-events: auto;
+        }
+
+        /* 可愛地鼠 SVG 容器（依格子高度等比例縮放，確保上方空間充足） */
+        .mole-character {
+            position: relative;
+            z-index: 2;
+            height: 44%;
+            width: auto;
+            max-width: 82px;
+            margin-bottom: -10px;
+            flex-shrink: 1;
+            transition: transform 0.15s;
+        }
+
+        /* 地鼠搖頭動畫（答錯時） */
+        .mole-wrapper.wrong-hit .mole-character {
+            animation: moleHeadShake 0.45s ease-in-out;
+        }
+
+        @keyframes moleHeadShake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-18deg); }
+            50% { transform: rotate(18deg); }
+            75% { transform: rotate(-12deg); }
+        }
+
+        /* 地鼠被打中暈頭轉向動畫（答對時） */
+        .mole-wrapper.correct-hit .mole-character {
+            transform: scale(0.92) translateY(3px);
+        }
+
+        /* 地鼠舉著的木牌（大字體＋直式注音寬敞設計，浮於最上層不被遮擋） */
+        .word-sign {
+            position: relative;
+            z-index: 7;
+            width: 98%;
+            background: linear-gradient(180deg, #fef3c7 0%, #fde68a 100%);
+            border: 3px solid var(--wood-border);
+            border-radius: 14px;
+            padding: clamp(3px, 0.6vh, 6px) 5px;
+            text-align: center;
+            box-shadow: 0 3px 0 var(--wood-border), 0 5px 10px rgba(0,0,0,0.28);
+            margin-bottom: 2px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* 木牌上的兩顆小釘子裝飾 */
+        .word-sign::before, .word-sign::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            width: 5px;
+            height: 5px;
+            background: #92400e;
+            border-radius: 50%;
+        }
+        .word-sign::before { left: 5px; }
+        .word-sign::after { right: 5px; }
+
+        .word-text {
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 答對時標示部首提示小標籤 */
+        .radical-tag {
+            display: none;
+            font-size: clamp(0.68rem, 1.35vh, 0.88rem);
+            font-weight: 900;
+            background: #16a34a;
+            color: #fff;
+            border-radius: 6px;
+            padding: 0 6px;
+            margin-top: 2px;
+        }
+
+        .radical-tag .zy-bopo-col {
+            color: #fef08a;
+        }
+
+        .mole-wrapper.correct-hit .word-sign {
+            background: #dcfce7;
+            border-color: #15803d;
+        }
+
+        .mole-wrapper.correct-hit .radical-tag {
+            display: inline-flex;
+        }
+
+        .mole-wrapper.wrong-hit .word-sign {
+            background: #fee2e2;
+            border-color: #b91c1c;
+        }
+
+        /* 點擊後的浮動特效（勾勾 +1 / 叉叉） */
+        .hit-feedback {
+            position: absolute;
+            top: 4%;
+            left: 50%;
+            transform: translateX(-50%) scale(0.5);
+            z-index: 20;
+            pointer-events: none;
+            font-weight: 900;
+            font-size: clamp(0.95rem, 2.1vh, 1.35rem);
+            padding: 2px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+            opacity: 0;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+        }
+
+        .hit-feedback .zy-bopo-col {
+            color: #fef08a;
+        }
+
+        .hit-feedback.show-correct {
+            background: #22c55e;
+            color: #fff;
+            border: 2.5px solid #fff;
+            animation: popUpFeedback 0.85s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+        }
+
+        .hit-feedback.show-wrong {
+            background: #ef4444;
+            color: #fff;
+            border: 2.5px solid #fff;
+            animation: popUpFeedback 0.85s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+        }
+
+        @keyframes popUpFeedback {
+            0% { opacity: 0; transform: translate(-50%, 8px) scale(0.5); }
+            25% { opacity: 1; transform: translate(-50%, -4px) scale(1.05); }
+            80% { opacity: 1; transform: translate(-50%, -8px) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -14px) scale(0.9); }
+        }
+
+        /* 底部教學即時提示條 */
+        .toast-banner {
+            flex-shrink: 0;
+            min-height: clamp(34px, 4.8vh, 46px);
+            width: 100%;
+            background: rgba(255, 255, 255, 0.94);
+            border: 2.5px solid var(--wood-dark);
+            border-radius: 14px;
+            padding: clamp(4px, 0.6vh, 7px) 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: clamp(0.88rem, 1.95vh, 1.15rem);
+            font-weight: 900;
+            color: #334155;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.25s, color 0.25s;
+        }
+
+        .toast-banner.good {
+            background: #dcfce7;
+            border-color: #16a34a;
+            color: #14532d;
+        }
+
+        .toast-banner.bad {
+            background: #fee2e2;
+            border-color: #dc2626;
+            color: #7f1d1d;
+        }
+
+        /* 彈出視窗遮罩（開始畫面、過關慶祝、挑戰失敗） */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .modal-card {
+            background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+            border: 5px solid var(--wood-border);
+            border-radius: 28px;
+            padding: clamp(14px, 3vh, 26px);
+            max-width: 580px;
+            width: 100%;
+            max-height: 92dvh;
+            overflow-y: auto;
+            text-align: center;
+            box-shadow: 0 10px 0 var(--wood-border), 0 18px 36px rgba(0,0,0,0.4);
+            animation: modalPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.75); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-badge {
+            font-size: clamp(2.6rem, 6vh, 3.8rem);
+            margin-bottom: 4px;
+            display: inline-block;
+            animation: bounceFairy 1.8s infinite;
+        }
+
+        .modal-title {
+            font-size: clamp(1.3rem, 3.2vh, 1.95rem);
+            font-weight: 900;
+            color: #92400e;
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            font-size: clamp(0.95rem, 2.2vh, 1.15rem);
+            font-weight: 700;
+            color: #451a03;
+            line-height: 1.45;
+            margin-bottom: 12px;
+        }
+
+        .rule-box {
+            background: #fff;
+            border: 3px dashed #f59e0b;
+            border-radius: 16px;
+            padding: clamp(10px, 1.8vh, 14px);
+            margin-bottom: 14px;
+            text-align: left;
+            font-size: clamp(0.9rem, 2vh, 1.08rem);
+            font-weight: 700;
+            color: #334155;
+            line-height: 1.55;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .btn-start {
+            background: linear-gradient(180deg, #4ade80 0%, #16a34a 100%);
+            border: 4px solid #14532d;
+            border-radius: 999px;
+            padding: clamp(8px, 1.4vh, 12px) clamp(24px, 4vw, 34px);
+            font-family: var(--font-kai);
+            font-size: clamp(1.1rem, 2.6vh, 1.45rem);
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 1px 2px 0 #14532d;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #14532d;
+            transition: transform 0.1s;
+        }
+
+        .btn-start .zy-bopo-col {
+            color: #fef08a;
+            text-shadow: 1px 1px 0 #14532d;
+        }
+
+        .btn-start:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #14532d;
+        }
+
+        /* 過關答對詞語回顧標籤牆 */
+        .learned-words {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 14px;
+            max-height: 28dvh;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        .learned-chip {
+            background: #dcfce7;
+            border: 2px solid #16a34a;
+            color: #14532d;
+            font-weight: 900;
+            font-size: clamp(0.92rem, 2vh, 1.06rem);
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        /* 彩帶動畫（過關慶祝） */
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            z-index: 150;
+            pointer-events: none;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* 手機直立小螢幕微調 */
+        @media (max-width: 540px) {
+            .header-board {
+                justify-content: center;
+            }
+            .stats-box {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .word-sign {
+                padding: 3px 2px;
+                border-width: 2.5px;
+            }
+            .word-sign .zy-char {
+                font-size: clamp(16px, 4.6vw, 22px);
+            }
+            .word-sign .zy-bopo-col {
+                font-size: clamp(8px, 2vw, 11px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 漂浮白雲裝飾 -->
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+
+    <div class="game-wrapper">
+        <!-- 頂部標題與功能列 -->
+        <header class="header-board">
+            <div class="title-group">
+                <span style="font-size: 1.8rem;">👕</span>
+                <h1 class="game-title" data-zy="部首真有趣－衣部大冒險">部首真有趣－衣部大冒險</h1>
+            </div>
+            <div class="controls-group">
+                <button id="zhuyinToggleBtn" class="btn-pill active-mode" title="切換顯示或隱藏注音符號">
+                    ㄅ <span data-zy="注音開">注音開</span>
+                </button>
+                <button id="modeToggleBtn" class="btn-pill" title="切換標準模式或無敵練習模式">
+                    ❤️ <span data-zy="標準模式">標準模式</span>
+                </button>
+                <button id="soundToggleBtn" class="btn-pill" title="開啟或關閉遊戲音效">
+                    🔊 <span data-zy="音效開">音效開</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 狀態與部首提示列 -->
+        <section class="status-panel">
+            <!-- 衣服小精靈提示卡 -->
+            <div class="mascot-hint">
+                <!-- 可愛衣服小精靈 SVG -->
+                <svg class="clothes-fairy" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <ellipse cx="22" cy="45" rx="14" ry="9" transform="rotate(-25 22 45)" fill="#bae6fd" stroke="#0284c7" stroke-width="3"/>
+                    <ellipse cx="78" cy="45" rx="14" ry="9" transform="rotate(25 78 45)" fill="#bae6fd" stroke="#0284c7" stroke-width="3"/>
+                    <path d="M30 28 L42 22 Q50 28 58 22 L70 28 L84 42 L74 52 L66 45 L66 78 Q50 83 34 78 L34 45 L26 52 L16 42 Z" fill="#fde047" stroke="#b45309" stroke-width="4" stroke-linejoin="round"/>
+                    <path d="M40 24 L50 35 L60 24" fill="none" stroke="#b45309" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="43" cy="50" r="3.5" fill="#451a03"/>
+                    <circle cx="57" cy="50" r="3.5" fill="#451a03"/>
+                    <circle cx="38" cy="55" r="3" fill="#fb7185" opacity="0.7"/>
+                    <circle cx="62" cy="55" r="3" fill="#fb7185" opacity="0.7"/>
+                    <path d="M46 56 Q50 61 54 56" fill="none" stroke="#451a03" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+                <div class="hint-text-box">
+                    <div class="hint-main">
+                        <span data-zy="找出含有">找出含有</span>
+                        <span class="radical-badge" data-zy="衣">衣</span>
+                        <span data-zy="或">或</span>
+                        <span class="radical-badge" data-zy="衤">衤</span>
+                        <span data-zy="部的詞語！">部的詞語！</span>
+                    </div>
+                    <div class="hint-sub" data-zy="打中 10 題正確答案就能過關喔！">打中 10 題正確答案就能過關喔！</div>
+                </div>
+            </div>
+
+            <!-- 分數進度條與愛心生命值 -->
+            <div class="stats-box">
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>⭐ <span data-zy="答對進度">答對進度</span></span>
+                        <span id="scoreText">0 / 10</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div id="progressBar" class="progress-bar-fill"></div>
+                    </div>
+                </div>
+
+                <div id="heartsBox" class="hearts-container" title="生命值">
+                    <span class="heart" id="heart1">❤️</span>
+                    <span class="heart" id="heart2">❤️</span>
+                    <span class="heart" id="heart3">❤️</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3x3 地鼠洞遊戲主畫面 -->
+        <main id="gameBoard" class="board-area" aria-label="打地鼠遊戲區">
+            <!-- 9 個地鼠洞將由 JavaScript 動態生成 -->
+        </main>
+
+        <!-- 底部即時教學提示條 -->
+        <div id="toastBanner" class="toast-banner">
+            <span data-zy="準備好了嗎？看到「衣」部或「衤」部的詞語就用力敲下去！">準備好了嗎？看到「衣」部或「衤」部的詞語就用力敲下去！</span>
+        </div>
+    </div>
+
+    <!-- 開始遊戲彈出視窗 -->
+    <div id="startModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-badge">👕🔨</div>
+            <h2 class="modal-title" data-zy="部首真有趣－衣部大冒險">部首真有趣－衣部大冒險</h2>
+            <p class="modal-desc" data-zy="歡迎來到衣部王國！調皮的地鼠拿著各種詞語木牌跑出來了！">歡迎來到衣部王國！調皮的地鼠拿著各種詞語木牌跑出來了！</p>
+            <div class="rule-box">
+                <div>🎯 <span data-zy="過關任務：打中 10 個含有「衣」部或「衤」部的詞語。" data-zy-align="left">過關任務：打中 10 個含有「衣」部或「衤」部的詞語。</span></div>
+                <div>⚠️ <span data-zy="小心陷阱：看清楚字形，不要打到不是衣部的詞語喔！" data-zy-align="left">小心陷阱：看清楚字形，不要打到不是衣部的詞語喔！</span></div>
+                <div>💡 <span data-zy="貼心提示：右上方可以切換「練習模式」或開關「注音」喔。" data-zy-align="left">貼心提示：右上方可以切換「練習模式」或開關「注音」喔。</span></div>
+            </div>
+            <button id="startBtn" class="btn-start" data-zy="開始大冒險！">開始大冒險！</button>
+        </div>
+    </div>
+
+    <!-- 過關慶祝彈出視窗 -->
+    <div id="winModal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-badge">🏆👕🎉</div>
+            <h2 class="modal-title" data-zy="恭喜成為「衣部小達人」！">恭喜成為「衣部小達人」！</h2>
+            <p class="modal-desc" data-zy="太厲害了！你成功找出了 10 個衣部詞語，認識了好多國字朋友：">太厲害了！你成功找出了 10 個衣部詞語，認識了好多國字朋友：</p>
+            <div id="learnedWordsList" class="learned-words"></div>
+            <button id="playAgainWinBtn" class="btn-start" data-zy="再玩一次！">再玩一次！</button>
+        </div>
+    </div>
+
+    <!-- 挑戰失敗彈出視窗 -->
+    <div id="loseModal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-badge">💪👕✨</div>
+            <h2 class="modal-title" data-zy="差一點點就過關囉！">差一點點就過關囉！</h2>
+            <p id="loseDesc" class="modal-desc"></p>
+            <button id="playAgainLoseBtn" class="btn-start" data-zy="重新挑戰！">重新挑戰！</button>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * =========================================================================
+         * 1. 台灣教育部《國語一字多音審訂表》標準注音字典與排版渲染器
+         * =========================================================================
+         */
+        // 詞語情境專用多音字覆蓋表（確保「袖子、裙子、衣裳、製造、這裡、襯衫」等詞語讀音 100% 精準）
+        const PHRASE_ZHUYIN_OVERRIDES = {
+            "衣服": ["ㄧ", "ㄈㄨˊ"],
+            "當初": ["ㄉㄤ", "ㄔㄨ"],
+            "襯衫": ["ㄔㄣˋ", "ㄕㄢ"],
+            "棉被": ["ㄇㄧㄢˊ", "ㄅㄟˋ"],
+            "袖子": ["ㄒㄧㄡˋ", "˙ㄗ"],
+            "旗袍": ["ㄑㄧˊ", "ㄆㄠˊ"],
+            "口袋": ["ㄎㄡˇ", "ㄉㄞˋ"],
+            "裁縫": ["ㄘㄞˊ", "ㄈㄥˊ"],
+            "裂開": ["ㄌㄧㄝˋ", "ㄎㄞ"],
+            "富裕": ["ㄈㄨˋ", "ㄩˋ"],
+            "裙子": ["ㄑㄩㄣˊ", "˙ㄗ"],
+            "補充": ["ㄅㄨˇ", "ㄔㄨㄥ"],
+            "服裝": ["ㄈㄨˊ", "ㄓㄨㄤ"],
+            "這裡": ["ㄓㄜˋ", "ㄌㄧˇ"],
+            "衣裳": ["ㄧ", "˙ㄕㄤ"],
+            "製造": ["ㄓˋ", "ㄗㄠˋ"],
+            "複習": ["ㄈㄨˋ", "ㄒㄧˊ"],
+            "長褲": ["ㄔㄤˊ", "ㄎㄨˋ"],
+            "褪色": ["ㄊㄨㄣˋ", "ㄙㄜˋ"],
+            "褐色": ["ㄏㄜˊ", "ㄙㄜˋ"],
+            "國王": ["ㄍㄨㄛˊ", "ㄨㄤˊ"],
+            "針線": ["ㄓㄣ", "ㄒㄧㄢˋ"],
+            "簡單": ["ㄐㄧㄢˇ", "ㄉㄢ"],
+            "聰明": ["ㄘㄨㄥ", "ㄇㄧㄥˊ"],
+            "大臣": ["ㄉㄚˋ", "ㄔㄣˊ"],
+            "不敢": ["ㄅㄨˋ", "ㄍㄢˇ"],
+            "東西": ["ㄉㄨㄥ", "ㄒㄧ"],
+            "慌張": ["ㄏㄨㄤ", "ㄓㄤ"],
+            "一直": ["ㄧˋ", "ㄓˊ"],
+            "好棒": ["ㄏㄠˇ", "ㄅㄤˋ"],
+            "滿街": ["ㄇㄢˇ", "ㄐㄧㄝ"],
+            "雙眼": ["ㄕㄨㄤ", "ㄧㄢˇ"],
+            "左右": ["ㄗㄨㄛˇ", "ㄧㄡˋ"],
+            "思想": ["ㄙ", "ㄒㄧㄤˇ"],
+            "衤": ["ㄧ"],
+            "衣部": ["ㄧ", "ㄅㄨˋ"],
+            "衤部": ["ㄧ", "ㄅㄨˋ"],
+            "一直": ["ㄧˋ", "ㄓˊ"],
+            "一次": ["ㄧˊ", "ㄘˋ"],
+            "一個": ["ㄧˊ", "˙ㄍㄜ"],
+            "一樣": ["ㄧˊ", "ㄧㄤˋ"],
+            "好棒": ["ㄏㄠˇ", "ㄅㄤˋ"],
+            "好多": ["ㄏㄠˇ", "ㄉㄨㄛ"],
+            "準備好了嗎": ["ㄓㄨㄣˇ", "ㄅㄟˋ", "ㄏㄠˇ", "˙ㄌㄜ", "˙ㄇㄚ"],
+            "太棒了": ["ㄊㄞˋ", "ㄅㄤˋ", "˙ㄌㄜ"],
+            "答對囉": ["ㄉㄚˊ", "ㄉㄨㄟˋ", "˙ㄌㄨㄛ"],
+            "過關喔": ["ㄍㄨㄛˋ", "ㄍㄨㄢ", "˙ㄛ"],
+            "詞語喔": ["ㄘˊ", "ㄩˇ", "˙ㄛ"],
+            "注音喔": ["ㄓㄨˋ", "ㄧㄣ", "˙ㄛ"],
+            "愛心喔": ["ㄞˋ", "ㄒㄧㄣ", "˙ㄛ"],
+            "吧": ["˙ㄅㄚ"],
+            "呢": ["˙ㄋㄜ"],
+            "的": ["˙ㄉㄜ"],
+            "了": ["˙ㄌㄜ"],
+            "嗎": ["˙ㄇㄚ"],
+            "喔": ["˙ㄛ"],
+            "囉": ["˙ㄌㄨㄛ"]
+        };
+
+        // 單字預設注音字典（涵蓋全站所有介面文字與提示解析）
+        const CHAR_ZHUYIN_MAP = {
+            "部": "ㄅㄨˋ", "首": "ㄕㄡˇ", "真": "ㄓㄣ", "有": "ㄧㄡˇ", "趣": "ㄑㄩˋ",
+            "衣": "ㄧ", "大": "ㄉㄚˋ", "冒": "ㄇㄠˋ", "險": "ㄒㄧㄢˇ", "注": "ㄓㄨˋ",
+            "音": "ㄧㄣ", "開": "ㄎㄞ", "關": "ㄍㄨㄢ", "標": "ㄅㄧㄠ", "準": "ㄓㄨㄣˇ",
+            "模": "ㄇㄛˊ", "式": "ㄕˋ", "練": "ㄌㄧㄢˋ", "習": "ㄒㄧˊ", "聲": "ㄕㄥ",
+            "效": "ㄒㄧㄠˋ", "靜": "ㄐㄧㄥˋ", "中": "ㄓㄨㄥ", "找": "ㄓㄠˇ", "出": "ㄔㄨ",
+            "含": "ㄏㄢˊ", "衤": "ㄧ", "或": "ㄏㄨㄛˋ", "的": "˙ㄉㄜ", "詞": "ㄘˊ",
+            "語": "ㄩˇ", "打": "ㄉㄚˇ", "題": "ㄊㄧˊ", "正": "ㄓㄥˋ", "確": "ㄑㄩㄝˋ",
+            "答": "ㄉㄚˊ", "案": "ㄢˋ", "就": "ㄐㄧㄡˋ", "能": "ㄋㄥˊ", "過": "ㄍㄨㄛˋ",
+            "喔": "˙ㄛ", "對": "ㄉㄨㄟˋ", "進": "ㄐㄧㄣˋ", "度": "ㄉㄨˋ", "無": "ㄨˊ",
+            "敵": "ㄉㄧˊ", "備": "ㄅㄟˋ", "好": "ㄏㄠˇ", "了": "˙ㄌㄜ", "嗎": "˙ㄇㄚ",
+            "看": "ㄎㄢˋ", "到": "ㄉㄠˋ", "用力": "ㄩㄥˋ", "用": "ㄩㄥˋ", "力": "ㄌㄧˋ",
+            "敲": "ㄑㄧㄠ", "下": "ㄒㄧㄚˋ", "去": "ㄑㄩˋ", "歡": "ㄏㄨㄢ", "迎": "ㄧㄥˊ",
+            "來": "ㄌㄞˊ", "王": "ㄨㄤˊ", "國": "ㄍㄨㄛˊ", "調": "ㄊㄧㄠˊ", "皮": "ㄆㄧˊ",
+            "地": "ㄉㄧˋ", "鼠": "ㄕㄨˇ", "拿": "ㄋㄚˊ", "著": "˙ㄓㄜ", "各": "ㄍㄜˋ",
+            "種": "ㄓㄨㄥˇ", "木": "ㄇㄨˋ", "牌": "ㄆㄞˊ", "跑": "ㄆㄠˇ", "任": "ㄖㄣˋ",
+            "務": "ㄨˋ", "個": "˙ㄍㄜ", "小": "ㄒㄧㄠˇ", "心": "ㄒㄧㄣ", "陷": "ㄒㄧㄢˋ",
+            "阱": "ㄐㄧㄥˇ", "清": "ㄑㄧㄥ", "楚": "ㄔㄨˇ", "字": "ㄗˋ", "形": "ㄒㄧㄥˊ",
+            "不": "ㄅㄨˋ", "要": "ㄧㄠˋ", "是": "ㄕˋ", "貼": "ㄊㄧㄝ", "提": "ㄊㄧˊ",
+            "示": "ㄕˋ", "右": "ㄧㄡˋ", "上": "ㄕㄤˋ", "方": "ㄈㄤ", "可": "ㄎㄜˇ",
+            "以": "ㄧˇ", "切": "ㄑㄧㄝ", "換": "ㄏㄨㄢˋ", "始": "ㄕˇ", "恭": "ㄍㄨㄥ",
+            "喜": "ㄒㄧˇ", "成": "ㄔㄥˊ", "為": "ㄨㄟˊ", "達": "ㄉㄚˊ", "人": "ㄖㄣˊ",
+            "太": "ㄊㄞˋ", "厲": "ㄌㄧˋ", "害": "ㄏㄞˋ", "你": "ㄋㄧˇ", "功": "ㄍㄨㄥ",
+            "認": "ㄖㄣˋ", "識": "ㄕˋ", "多": "ㄉㄨㄛ", "朋": "ㄆㄥˊ", "友": "ㄧㄡˇ",
+            "再": "ㄗㄞˋ", "玩": "ㄨㄢˊ", "一": "ㄧ", "次": "ㄘˋ", "差": "ㄔㄚ",
+            "點": "ㄉㄧㄢˇ", "囉": "˙ㄌㄨㄛ", "已": "ㄧˇ", "經": "ㄐㄧㄥ", "表": "ㄅㄧㄠˇ",
+            "現": "ㄒㄧㄢˋ", "很": "ㄏㄣˇ", "棒": "ㄅㄤˋ", "仔": "ㄗˇ", "細": "ㄒㄧˋ",
+            "哪": "ㄋㄚˇ", "些": "ㄒㄧㄝ", "重": "ㄔㄨㄥˊ", "新": "ㄒㄧㄣ", "挑": "ㄊㄧㄠˇ",
+            "戰": "ㄓㄢˋ", "吧": "˙ㄅㄚ", "遊": "ㄧㄡˊ", "戲": "ㄒㄧˋ", "快": "ㄎㄨㄞˋ",
+            "哎": "ㄞ", "呀": "ㄧㄚ", "沒": "ㄇㄟˊ", "金": "ㄐㄧㄣ", "與": "ㄩˇ",
+            "糸": "ㄇㄧˋ", "竹": "ㄓㄨˊ", "口": "ㄎㄡˇ", "耳": "ㄦˇ", "日": "ㄖˋ",
+            "臣": "ㄔㄣˊ", "攴": "ㄆㄨ", "襾": "ㄧㄚˋ", "弓": "ㄍㄨㄥ", "目": "ㄇㄨˋ",
+            "女": "ㄋㄩˇ", "水": "ㄕㄨㄟˇ", "行": "ㄒㄧㄥˊ", "隹": "ㄓㄨㄟ", "工": "ㄍㄨㄥ",
+            "都": "ㄉㄡ", "錯": "ㄘㄨㄛˋ", "會": "ㄏㄨㄟˋ", "扣": "ㄎㄡˋ", "愛": "ㄞˋ",
+            "共": "ㄍㄨㄥˋ", "顆": "ㄎㄜ", "服": "ㄈㄨˊ", "當": "ㄉㄤ", "初": "ㄔㄨ",
+            "襯": "ㄔㄣˋ", "衫": "ㄕㄢ", "棉": "ㄇㄧㄢˊ", "被": "ㄅㄟˋ", "袖": "ㄒㄧㄡˋ",
+            "子": "˙ㄗ", "旗": "ㄑㄧˊ", "袍": "ㄆㄠˊ", "袋": "ㄉㄞˋ", "裁": "ㄘㄞˊ",
+            "縫": "ㄈㄥˊ", "裂": "ㄌㄧㄝˋ", "富": "ㄈㄨˋ", "裕": "ㄩˋ", "裙": "ㄑㄩㄣˊ",
+            "補": "ㄅㄨˇ", "充": "ㄔㄨㄥ", "裝": "ㄓㄨㄤ", "這": "ㄓㄜˋ", "裡": "ㄌㄧˇ",
+            "裳": "˙ㄕㄤ", "製": "ㄓˋ", "造": "ㄗㄠˋ", "複": "ㄈㄨˋ", "長": "ㄔㄤˊ",
+            "褲": "ㄎㄨˋ", "褪": "ㄊㄨㄣˋ", "色": "ㄙㄜˋ", "褐": "ㄏㄜˊ", "針": "ㄓㄣ",
+            "線": "ㄒㄧㄢˋ", "簡": "ㄐㄧㄢˇ", "單": "ㄉㄢ", "聰": "ㄘㄨㄥ", "明": "ㄇㄧㄥˊ",
+            "敢": "ㄍㄢˇ", "東": "ㄉㄨㄥ", "西": "ㄒㄧ", "慌": "ㄏㄨㄤ", "張": "ㄓㄤ",
+            "直": "ㄓˊ", "滿": "ㄇㄢˇ", "街": "ㄐㄧㄝ", "雙": "ㄕㄨㄤ", "眼": "ㄧㄢˇ",
+            "左": "ㄗㄨㄛˇ", "思": "ㄙ", "想": "ㄒㄧㄤˇ"
+        };
+
+        /**
+         * 將單一注音字串（例如 "ㄇㄧㄢˊ" 或 "˙ㄗ"）解析為 HTML 結構
+         * 規則：
+         *  - 輕聲「˙」置於注音符號正上方
+         *  - 二聲「ˊ」、三聲「ˇ」、四聲「ˋ」置於最後一個注音符號右側
+         */
+        function buildBopoColumnHTML(syllable) {
+            if (!syllable) return '';
+            let neutral = '';
+            let tone = '';
+            let body = syllable;
+
+            if (body.startsWith('˙')) {
+                neutral = '˙';
+                body = body.slice(1);
+            }
+            const lastChar = body.slice(-1);
+            if (lastChar === 'ˊ' || lastChar === 'ˇ' || lastChar === 'ˋ') {
+                tone = lastChar;
+                body = body.slice(0, -1);
+            }
+
+            const symbolsHTML = body.split('').map(s => `<span>${s}</span>`).join('');
+            return `
+                <span class="zy-bopo-col" aria-hidden="true">
+                    ${neutral ? `<span class="zy-neutral">${neutral}</span>` : ''}
+                    <span class="zy-syllable-row">
+                        <span class="zy-symbols">${symbolsHTML}</span>
+                        ${tone ? `<span class="zy-tone">${tone}</span>` : ''}
+                    </span>
+                </span>
+            `;
+        }
+
+        /**
+         * 核心渲染函式：將任意中文句子轉為「標楷體國字＋右側直式注音」HTML
+         * 支援多音字詞庫自動比對！
+         */
+        function renderRuby(text, options = {}) {
+            const alignClass = options.leftAlign ? ' left-align' : '';
+            const chars = Array.from(text);
+            const resolvedSyllables = new Array(chars.length).fill(null);
+
+            // 1. 優先比對多字詞語（由長到短），確保破音字完全正確
+            const sortedPhrases = Object.keys(PHRASE_ZHUYIN_OVERRIDES).sort((a, b) => b.length - a.length);
+            for (const phrase of sortedPhrases) {
+                let startIndex = 0;
+                while ((startIndex = text.indexOf(phrase, startIndex)) !== -1) {
+                    const pChars = Array.from(phrase);
+                    const pSyls = PHRASE_ZHUYIN_OVERRIDES[phrase];
+                    // 計算字元索引位置
+                    const charOffset = Array.from(text.slice(0, startIndex)).length;
+                    let canApply = true;
+                    for (let k = 0; k < pChars.length; k++) {
+                        if (resolvedSyllables[charOffset + k] !== null) {
+                            canApply = false;
+                            break;
+                        }
+                    }
+                    if (canApply && pSyls.length === pChars.length) {
+                        for (let k = 0; k < pChars.length; k++) {
+                            resolvedSyllables[charOffset + k] = pSyls[k];
+                        }
+                    }
+                    startIndex += phrase.length;
+                }
+            }
+
+            // 2. 逐字組裝 HTML（有對應注音的國字加上直式注音欄，數字與標點保持自然對齊）
+            const innerHTML = chars.map((ch, idx) => {
+                const syl = resolvedSyllables[idx] || CHAR_ZHUYIN_MAP[ch];
+                if (syl) {
+                    return `<span class="zy-char-box"><span class="zy-char">${ch}</span>${buildBopoColumnHTML(syl)}</span>`;
+                } else if (ch === ' ') {
+                    return `<span style="display:inline-block;width:0.25em;"></span>`;
+                } else {
+                    return `<span class="zy-char-box"><span class="zy-char">${ch}</span></span>`;
+                }
+            }).join('');
+
+            return `<span class="zhuyin-phrase${alignClass}">${innerHTML}</span>`;
+        }
+
+        // 掃描頁面上所有帶有 data-zy 屬性的靜態元素，自動套用標楷體注音
+        function hydrateStaticZhuyin() {
+            document.querySelectorAll('[data-zy]').forEach(el => {
+                const rawText = el.getAttribute('data-zy');
+                const leftAlign = el.getAttribute('data-zy-align') === 'left';
+                el.innerHTML = renderRuby(rawText, { leftAlign });
+            });
+        }
+
+        /**
+         * =========================================================================
+         * 2. 題庫資料設定（包含老師指定的 20 個正確答案與 14 個錯誤答案）
+         * =========================================================================
+         */
+        const CORRECT_WORDS = [
+            { word: "衣服", detail: "「衣」是衣部" },
+            { word: "當初", detail: "「初」是衤部" },
+            { word: "襯衫", detail: "「襯、衫」都是衤部" },
+            { word: "棉被", detail: "「被」是衤部" },
+            { word: "袖子", detail: "「袖」是衤部" },
+            { word: "旗袍", detail: "「袍」是衤部" },
+            { word: "口袋", detail: "「袋」是衣部" },
+            { word: "裁縫", detail: "「裁」是衣部" },
+            { word: "裂開", detail: "「裂」是衣部" },
+            { word: "富裕", detail: "「裕」是衤部" },
+            { word: "裙子", detail: "「裙」是衤部" },
+            { word: "補充", detail: "「補」是衤部" },
+            { word: "服裝", detail: "「裝」是衣部" },
+            { word: "這裡", detail: "「裡」是衣部" },
+            { word: "衣裳", detail: "「衣、裳」都是衣部" },
+            { word: "製造", detail: "「製」是衣部" },
+            { word: "複習", detail: "「複」是衤部" },
+            { word: "長褲", detail: "「褲」是衤部" },
+            { word: "褪色", detail: "「褪」是衤部" },
+            { word: "褐色", detail: "「褐」是衤部" }
+        ];
+
+        const WRONG_WORDS = [
+            { word: "國王", reason: "沒有衣部喔" },
+            { word: "針線", reason: "是金部與糸部" },
+            { word: "簡單", reason: "是竹部與口部" },
+            { word: "聰明", reason: "是耳部與日部" },
+            { word: "大臣", reason: "是大部與臣部" },
+            { word: "不敢", reason: "是一部與攴部" },
+            { word: "東西", reason: "是木部與襾部" },
+            { word: "慌張", reason: "是心部與弓部" },
+            { word: "一直", reason: "是一部與目部" },
+            { word: "好棒", reason: "是女部與木部" },
+            { word: "滿街", reason: "是水部與行部" },
+            { word: "雙眼", reason: "是隹部與目部" },
+            { word: "左右", reason: "是工部與口部" },
+            { word: "思想", reason: "是心部喔" }
+        ];
+
+        /**
+         * =========================================================================
+         * 3. Web Audio API 內建可愛音效合成器
+         * =========================================================================
+         */
+        class SoundFX {
+            constructor() {
+                this.ctx = null;
+                this.muted = false;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContext();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playPop() {
+                if (this.muted) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(280, now);
+                osc.frequency.exponentialRampToValueAtTime(520, now + 0.09);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.09);
+            }
+
+            playCorrect() {
+                if (this.muted) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.065);
+                    gain.gain.setValueAtTime(0.22, now + idx * 0.065);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.065 + 0.25);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + idx * 0.065);
+                    osc.stop(now + idx * 0.065 + 0.25);
+                });
+            }
+
+            playWrong() {
+                if (this.muted) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, now);
+                osc.frequency.linearRampToValueAtTime(135, now + 0.28);
+                gain.gain.setValueAtTime(0.18, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            }
+
+            playWin() {
+                if (this.muted) return;
+                this.init();
+                const now = this.ctx.currentTime;
+                const melody = [
+                    { f: 523.25, t: 0, d: 0.14 },
+                    { f: 659.25, t: 0.14, d: 0.14 },
+                    { f: 783.99, t: 0.28, d: 0.14 },
+                    { f: 1046.50, t: 0.42, d: 0.32 },
+                    { f: 783.99, t: 0.76, d: 0.14 },
+                    { f: 1046.50, t: 0.92, d: 0.45 }
+                ];
+                melody.forEach(note => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(note.f, now + note.t);
+                    gain.gain.setValueAtTime(0.25, now + note.t);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + note.t + note.d);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + note.t);
+                    osc.stop(now + note.t + note.d);
+                });
+            }
+        }
+
+        const sfx = new SoundFX();
+
+        /**
+         * =========================================================================
+         * 4. 遊戲核心狀態與 DOM 參照
+         * =========================================================================
+         */
+        const TARGET_SCORE = 10;
+        const MAX_HEARTS = 3;
+        const HOLE_COUNT = 9;
+
+        let state = {
+            isPlaying: false,
+            score: 0,
+            hearts: MAX_HEARTS,
+            practiceMode: false,
+            showZhuyin: true,
+            holes: [],
+            spawnTimer: null,
+            usedCorrectPool: [],
+            learnedList: []
+        };
+
+        const gameBoard = document.getElementById('gameBoard');
+        const scoreText = document.getElementById('scoreText');
+        const progressBar = document.getElementById('progressBar');
+        const heartsBox = document.getElementById('heartsBox');
+        const toastBanner = document.getElementById('toastBanner');
+        const zhuyinToggleBtn = document.getElementById('zhuyinToggleBtn');
+        const modeToggleBtn = document.getElementById('modeToggleBtn');
+        const soundToggleBtn = document.getElementById('soundToggleBtn');
+
+        const startModal = document.getElementById('startModal');
+        const winModal = document.getElementById('winModal');
+        const loseModal = document.getElementById('loseModal');
+        const learnedWordsList = document.getElementById('learnedWordsList');
+
+        /**
+         * =========================================================================
+         * 5. 生成 3x3 地鼠洞與可愛地鼠 SVG
+         * =========================================================================
+         */
+        function createMoleSVG() {
+            return `
+                <svg class="mole-character" viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="28" cy="34" r="13" fill="#a16207" stroke="#451a03" stroke-width="4"/>
+                    <circle cx="28" cy="34" r="6" fill="#fbcfe8"/>
+                    <circle cx="92" cy="34" r="13" fill="#a16207" stroke="#451a03" stroke-width="4"/>
+                    <circle cx="92" cy="34" r="6" fill="#fbcfe8"/>
+                    <path d="M22 105 L22 55 C22 25, 98 25, 98 55 L98 105 Z" fill="#ca8a04" stroke="#451a03" stroke-width="4"/>
+                    <ellipse cx="60" cy="86" rx="24" ry="18" fill="#fef08a"/>
+                    <g class="eyes-normal">
+                        <circle cx="43" cy="52" r="5.5" fill="#1e293b"/>
+                        <circle cx="41.5" cy="50" r="2" fill="#fff"/>
+                        <circle cx="77" cy="52" r="5.5" fill="#1e293b"/>
+                        <circle cx="75.5" cy="50" r="2" fill="#fff"/>
+                    </g>
+                    <g class="eyes-dizzy" style="display:none;">
+                        <path d="M37 47 L49 57 M49 47 L37 57" stroke="#1e293b" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M71 47 L83 57 M83 47 L71 57" stroke="#1e293b" stroke-width="4" stroke-linecap="round"/>
+                    </g>
+                    <ellipse cx="32" cy="61" rx="6" ry="4" fill="#fb7185" opacity="0.75"/>
+                    <ellipse cx="88" cy="61" rx="6" ry="4" fill="#fb7185" opacity="0.75"/>
+                    <ellipse cx="60" cy="60" rx="8" ry="5.5" fill="#f43f5e" stroke="#451a03" stroke-width="2.5"/>
+                    <path d="M52 69 Q60 76 68 69" fill="none" stroke="#451a03" stroke-width="3" stroke-linecap="round"/>
+                    <rect x="56" y="70" width="4" height="5" rx="1" fill="#fff" stroke="#451a03" stroke-width="1.5"/>
+                    <rect x="60" y="70" width="4" height="5" rx="1" fill="#fff" stroke="#451a03" stroke-width="1.5"/>
+                </svg>
+            `;
+        }
+
+        function initBoard() {
+            gameBoard.innerHTML = '';
+            state.holes = [];
+
+            for (let i = 0; i < HOLE_COUNT; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'hole-cell';
+                cell.dataset.index = i;
+
+                cell.innerHTML = `
+                    <div class="hit-feedback" id="feedback-${i}"></div>
+                    <div class="hole-back"></div>
+                    <div class="mole-wrapper" id="mole-${i}">
+                        ${createMoleSVG()}
+                        <div class="word-sign">
+                            <span class="word-text" id="word-${i}">${renderRuby("衣服")}</span>
+                            <span class="radical-tag" id="tag-${i}">${renderRuby("衣部")}</span>
+                        </div>
+                    </div>
+                    <div class="hole-front"></div>
+                `;
+
+                cell.addEventListener('pointerdown', (e) => {
+                    e.preventDefault();
+                    handleWhack(i);
+                });
+
+                gameBoard.appendChild(cell);
+
+                state.holes.push({
+                    index: i,
+                    cellEl: cell,
+                    moleEl: cell.querySelector(`#mole-${i}`),
+                    wordEl: cell.querySelector(`#word-${i}`),
+                    tagEl: cell.querySelector(`#tag-${i}`),
+                    feedbackEl: cell.querySelector(`#feedback-${i}`),
+                    isUp: false,
+                    isHit: false,
+                    data: null,
+                    hideTimeout: null
+                });
+            }
+        }
+
+        /**
+         * =========================================================================
+         * 6. 抽題與地鼠探頭控制
+         * =========================================================================
+         */
+        function getNextWordData() {
+            const chooseCorrect = Math.random() < 0.62;
+
+            if (chooseCorrect) {
+                let available = CORRECT_WORDS.filter(item => !state.usedCorrectPool.includes(item.word));
+                if (available.length === 0) {
+                    state.usedCorrectPool = [];
+                    available = [...CORRECT_WORDS];
+                }
+                const picked = available[Math.floor(Math.random() * available.length)];
+                state.usedCorrectPool.push(picked.word);
+                return { ...picked, isCorrect: true };
+            } else {
+                const picked = WRONG_WORDS[Math.floor(Math.random() * WRONG_WORDS.length)];
+                return { ...picked, isCorrect: false };
+            }
+        }
+
+        function popRandomMole() {
+            if (!state.isPlaying) return;
+
+            const availableHoles = state.holes.filter(h => !h.isUp);
+            const activeCount = HOLE_COUNT - availableHoles.length;
+
+            if (availableHoles.length > 0 && activeCount < 3) {
+                const hole = availableHoles[Math.floor(Math.random() * availableHoles.length)];
+                const wordData = getNextWordData();
+
+                hole.isUp = true;
+                hole.isHit = false;
+                hole.data = wordData;
+                // 使用標楷體＋注音渲染地鼠木牌詞語與解析標籤
+                hole.wordEl.innerHTML = renderRuby(wordData.word);
+                hole.tagEl.innerHTML = wordData.isCorrect ? renderRuby(wordData.detail) : '';
+                hole.moleEl.classList.remove('correct-hit', 'wrong-hit');
+                setMoleDizzy(hole.moleEl, false);
+
+                hole.cellEl.classList.add('up');
+                sfx.playPop();
+
+                const stayDuration = 2500 + Math.random() * 800;
+                hole.hideTimeout = setTimeout(() => {
+                    hideMole(hole);
+                }, stayDuration);
+            }
+
+            const nextInterval = 950 + Math.random() * 500;
+            state.spawnTimer = setTimeout(popRandomMole, nextInterval);
+        }
+
+        function hideMole(hole) {
+            hole.isUp = false;
+            hole.cellEl.classList.remove('up');
+            if (hole.hideTimeout) {
+                clearTimeout(hole.hideTimeout);
+                hole.hideTimeout = null;
+            }
+        }
+
+        function setMoleDizzy(moleEl, isDizzy) {
+            const normalEyes = moleEl.querySelector('.eyes-normal');
+            const dizzyEyes = moleEl.querySelector('.eyes-dizzy');
+            if (normalEyes && dizzyEyes) {
+                normalEyes.style.display = isDizzy ? 'none' : 'block';
+                dizzyEyes.style.display = isDizzy ? 'block' : 'none';
+            }
+        }
+
+        /**
+         * =========================================================================
+         * 7. 敲擊判定與視覺/音效回饋（全面套用標楷體＋注音）
+         * =========================================================================
+         */
+        function handleWhack(index) {
+            if (!state.isPlaying) return;
+            const hole = state.holes[index];
+
+            if (!hole.isUp || hole.isHit) return;
+
+            hole.isHit = true;
+            clearTimeout(hole.hideTimeout);
+
+            const data = hole.data;
+
+            if (data.isCorrect) {
+                sfx.playCorrect();
+                hole.moleEl.classList.add('correct-hit');
+                setMoleDizzy(hole.moleEl, true);
+                showFloatingFeedback(hole.feedbackEl, `✔ ${renderRuby("答對")} +1`, true);
+
+                state.score += 1;
+                if (!state.learnedList.some(item => item.word === data.word)) {
+                    state.learnedList.push(data);
+                }
+
+                updateStatusUI();
+                updateToast(`太棒了！「${data.word}」答對囉！（${data.detail}）`, 'good');
+
+                setTimeout(() => hideMole(hole), 800);
+
+                if (state.score >= TARGET_SCORE) {
+                    setTimeout(handleWin, 650);
+                }
+            } else {
+                sfx.playWrong();
+                hole.moleEl.classList.add('wrong-hit');
+                showFloatingFeedback(hole.feedbackEl, `✖ ${renderRuby("不是衣部")}`, false);
+
+                gameBoard.classList.remove('shake-screen');
+                void gameBoard.offsetWidth;
+                gameBoard.classList.add('shake-screen');
+
+                updateToast(`哎呀！「${data.word}」不是衣部喔！（${data.reason}）`, 'bad');
+
+                if (!state.practiceMode) {
+                    state.hearts = Math.max(0, state.hearts - 1);
+                    updateStatusUI();
+                }
+
+                setTimeout(() => hideMole(hole), 750);
+
+                if (!state.practiceMode && state.hearts <= 0) {
+                    setTimeout(handleLose, 650);
+                }
+            }
+        }
+
+        function showFloatingFeedback(el, htmlContent, isCorrect) {
+            el.innerHTML = htmlContent;
+            el.className = 'hit-feedback';
+            void el.offsetWidth;
+            el.classList.add(isCorrect ? 'show-correct' : 'show-wrong');
+        }
+
+        function updateToast(msg, type = '') {
+            toastBanner.innerHTML = renderRuby(msg);
+            toastBanner.className = 'toast-banner';
+            if (type) toastBanner.classList.add(type);
+        }
+
+        function updateStatusUI() {
+            scoreText.innerHTML = `${state.score} / ${TARGET_SCORE} ${renderRuby("題")}`;
+            const pct = Math.min(100, (state.score / TARGET_SCORE) * 100);
+            progressBar.style.width = `${pct}%`;
+
+            if (state.practiceMode) {
+                heartsBox.innerHTML = `<span style="font-weight:900; color:#15803d; font-size:1rem;">🛡️ ${renderRuby("無敵練習中")}</span>`;
+            } else {
+                heartsBox.innerHTML = '';
+                for (let i = 1; i <= MAX_HEARTS; i++) {
+                    const span = document.createElement('span');
+                    span.className = 'heart' + (i > state.hearts ? ' lost' : '');
+                    span.textContent = '❤️';
+                    heartsBox.appendChild(span);
+                }
+            }
+        }
+
+        /**
+         * =========================================================================
+         * 8. 遊戲流程控制（開始、過關、失敗、模式與注音開關）
+         * =========================================================================
+         */
+        function startGame() {
+            sfx.init();
+            clearTimeout(state.spawnTimer);
+            state.holes.forEach(h => hideMole(h));
+
+            state.isPlaying = true;
+            state.score = 0;
+            state.hearts = MAX_HEARTS;
+            state.usedCorrectPool = [];
+            state.learnedList = [];
+
+            startModal.classList.add('hidden');
+            winModal.classList.add('hidden');
+            loseModal.classList.add('hidden');
+
+            updateStatusUI();
+            updateToast('遊戲開始！快找出「衣」部或「衤」部的詞語吧！');
+
+            state.spawnTimer = setTimeout(popRandomMole, 500);
+        }
+
+        function stopGame() {
+            state.isPlaying = false;
+            clearTimeout(state.spawnTimer);
+            state.holes.forEach(h => hideMole(h));
+        }
+
+        function handleWin() {
+            stopGame();
+            sfx.playWin();
+            launchConfetti();
+
+            learnedWordsList.innerHTML = '';
+            state.learnedList.forEach(item => {
+                const chip = document.createElement('span');
+                chip.className = 'learned-chip';
+                chip.innerHTML = renderRuby(`${item.word}（${item.detail}）`);
+                learnedWordsList.appendChild(chip);
+            });
+
+            winModal.classList.remove('hidden');
+        }
+
+        function handleLose() {
+            stopGame();
+            const loseText = `你已經答對了 ${state.score} 題，表現很棒喔！再仔細看看哪些字有「衣」或「衤」部，再挑戰一次吧！`;
+            document.getElementById('loseDesc').innerHTML = renderRuby(loseText);
+            loseModal.classList.remove('hidden');
+        }
+
+        function launchConfetti() {
+            const colors = ['#f43f5e', '#3b82f6', '#eab308', '#22c55e', '#a855f7', '#fb923c'];
+            for (let i = 0; i < 55; i++) {
+                const conf = document.createElement('div');
+                conf.className = 'confetti';
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                conf.style.animationDuration = (2.2 + Math.random() * 2) + 's';
+                conf.style.animationDelay = (Math.random() * 0.6) + 's';
+                document.body.appendChild(conf);
+                setTimeout(() => conf.remove(), 4800);
+            }
+        }
+
+        // 按鈕事件監聽
+        document.getElementById('startBtn').addEventListener('click', startGame);
+        document.getElementById('playAgainWinBtn').addEventListener('click', startGame);
+        document.getElementById('playAgainLoseBtn').addEventListener('click', startGame);
+
+        // 切換「注音開 / 注音關」
+        zhuyinToggleBtn.addEventListener('click', () => {
+            state.showZhuyin = !state.showZhuyin;
+            document.body.classList.toggle('hide-zhuyin', !state.showZhuyin);
+            if (state.showZhuyin) {
+                zhuyinToggleBtn.innerHTML = `ㄅ ${renderRuby("注音開")}`;
+                zhuyinToggleBtn.classList.add('active-mode');
+            } else {
+                zhuyinToggleBtn.innerHTML = `ㄅ ${renderRuby("注音關")}`;
+                zhuyinToggleBtn.classList.remove('active-mode');
+            }
+        });
+
+        // 切換「標準模式 / 無敵練習模式」
+        modeToggleBtn.addEventListener('click', () => {
+            state.practiceMode = !state.practiceMode;
+            if (state.practiceMode) {
+                modeToggleBtn.innerHTML = `🛡️ ${renderRuby("練習模式")}`;
+                modeToggleBtn.classList.add('active-mode');
+                updateToast('已切換為「無敵練習模式」，答錯不會扣愛心喔！', 'good');
+            } else {
+                modeToggleBtn.innerHTML = `❤️ ${renderRuby("標準模式")}`;
+                modeToggleBtn.classList.remove('active-mode');
+                state.hearts = MAX_HEARTS;
+                updateToast('已切換為「標準模式」，共有 3 顆愛心！');
+            }
+            updateStatusUI();
+        });
+
+        // 切換「音效開 / 靜音」
+        soundToggleBtn.addEventListener('click', () => {
+            sfx.muted = !sfx.muted;
+            soundToggleBtn.innerHTML = sfx.muted
+                ? `🔇 ${renderRuby("靜音中")}`
+                : `🔊 ${renderRuby("音效開")}`;
+        });
+
+        // 初始化畫面
+        window.addEventListener('DOMContentLoaded', () => {
+            hydrateStaticZhuyin();
+            initBoard();
+            updateStatusUI();
+        });
+    </script>
+</body>
+</html>
